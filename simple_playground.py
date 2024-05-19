@@ -35,7 +35,8 @@ class Car():
         self.wheel_angle = 0
         xini_range = (self.xini_max - self.xini_min - self.diameter)
         left_xpos = self.xini_min + self.diameter//2
-        self.xpos = r.random()*xini_range + left_xpos  # random x pos [-3, 3]
+        # self.xpos = r.random()*xini_range + left_xpos  # random x pos [-3, 3]
+        self.xpos = 0
         self.ypos = 0
 
     def setWheelAngle(self, angle):
