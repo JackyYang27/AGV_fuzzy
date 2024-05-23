@@ -41,13 +41,10 @@ class Fuzzy:
             else:
                 return 0
 
+
         def right_left_diff_straight(y):
-            if -2 <= y <= 2:
-                return 1
-            elif -4 < y < -2:
-                return (y + 4) / 2
-            elif 2 < y <= 4:
-                return (4 - y) / 2
+            if -1 <= y <= 1:
+                return 1 - abs(y)
             else:
                 return 0
 
@@ -123,6 +120,7 @@ class Fuzzy:
         # 計算質心（離散重心）
         centroid = np.sum(samples * combined_output) / sum_membership
         return centroid
+
 
 # 距離 Set
 class Distance(Enum):

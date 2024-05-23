@@ -1,4 +1,3 @@
-
 import random as r
 import os
 import matplotlib
@@ -35,8 +34,8 @@ class Car():
         self.wheel_angle = 0
         xini_range = (self.xini_max - self.xini_min - self.diameter)
         left_xpos = self.xini_min + self.diameter//2
-        # self.xpos = r.random()*xini_range + left_xpos  # random x pos [-3, 3]
-        self.xpos = 0
+        self.xpos = r.random()*xini_range + left_xpos  # random x pos [-3, 3]
+        # self.xpos = 0
         self.ypos = 0
 
     def setWheelAngle(self, angle):
@@ -112,6 +111,9 @@ class Playground():
         self.error_count = 0
         self.fuzzy_controller = Fuzzy()
 
+    def is_successful(self):
+        return self.complete  # 返回模擬是否成功  
+      
     def _setDefaultLine(self):
         self.destination_line = Line2D(18, 40, 30, 37)
 
@@ -302,6 +304,28 @@ class Playground():
         else:
             return self.state
  
+class Simulation:
+    '''
+    state: 當前狀態
+    QtCore.QTimer: 控制動畫的執行頻率和狀態
+    '''
+    def __init__(self, play: Playground):
+        self.play = play
+        self.state = self.play.reset()
+        self.path_points = []
+
+    # 運行一次模擬
+    def run_simulation(self):
+        self.path_points = []
+        self.play.reset()
+        while not self.play.done:
+            front_distance = self.play.state[0]  # 前方距离
+            right_distance = self.play.state[1]  # 右方距离
+            left_distance = self.play.state[2]  # 左方距离
+            action = self.play.fuzzy_controller.get_theta(front_distance, right_distance, left_distance)
+            self.play.step(action)
+            self.path_points.append(self.play.car.getPosition("center"))
+        return self.play.complete
 class Animation(QtWidgets.QMainWindow):
     '''
     state: 當前狀態
@@ -448,9 +472,20 @@ class Animation(QtWidgets.QMainWindow):
     # 顯示動畫
     def run(self):
         self.show()
-
-#主程式
+# 主程式
 if __name__ == '__main__':
+    # playground = Playground()
+    # success_count = 0  # 成功次數
+    # total_runs = 1000  # 總運行次數
+
+    # for _ in range(total_runs):
+    #     sim = Simulation(playground)
+    #     if sim.run_simulation():
+    #         success_count += 1
+
+    # success_rate = success_count / total_runs * 100
+    # print(f'Success rate: {success_rate:.2f}%')
+
     app = QtWidgets.QApplication([])
     playground = Playground()
     GUI = Animation(playground)
